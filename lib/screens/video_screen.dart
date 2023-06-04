@@ -14,7 +14,7 @@ class _VideoScreenState extends State<VideoScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _meeduPlayerController.setDataSource(
         DataSource(
           type: DataSourceType.network,

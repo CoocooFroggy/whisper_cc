@@ -225,17 +225,21 @@ class _YoutubeExamplePageState extends State<YoutubeExamplePage> {
                                       await _playYoutubeVideo(video);
                                     } catch (e) {
                                       print(e);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  'Unable to play video: ${e.toString()}')));
+                                      if (mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text(
+                                                    'Unable to play video: ${e.toString()}')));
+                                      }
                                     }
                                   } catch (e) {
                                     print(e);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            content: Text(
-                                                'Unable to load captions: ${e.toString()}')));
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  'Unable to load captions: ${e.toString()}')));
+                                    }
                                   }
 
                                   _loading.value = false;
