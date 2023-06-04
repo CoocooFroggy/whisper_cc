@@ -33,14 +33,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  audio_video_progress_bar:
-    dependency: transitive
-    description:
-      name: audio_video_progress_bar
-      sha256: "7be62917604e19e3873e12c8025bbc6dbee5876e1fa4cd7772ea1d0eb0e88d99"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.11.0"
   auto_orientation:
     dependency: transitive
     description:
@@ -201,22 +193,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
-  dart_vlc:
-    dependency: transitive
-    description:
-      name: dart_vlc
-      sha256: f93499b938fbb6ce9eb3fb0368878cd18eac4e18ed45956731a0d6e758d75a34
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.0"
-  dart_vlc_ffi:
-    dependency: transitive
-    description:
-      name: dart_vlc_ffi
-      sha256: "670d4b27296935e4e4b8d903d6833c222fc94133bbd3e9fa36d8a2e7751a63d0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.0+1"
   fake_async:
     dependency: transitive
     description:
@@ -274,10 +250,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_meedu_videoplayer
-      sha256: f93b65d2c19e6503361bbcd32cd6d9ce8113a663ab1ccd3373d382f93e7a57db
+      sha256: "345511e5362441aa79598a026fabdddf1b5982ff2b2013b981882b435dda137b"
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.0"
+    version: "4.2.10"
   flutter_spinkit:
     dependency: transitive
     description:
@@ -336,14 +312,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.1"
-  helpers:
-    dependency: transitive
-    description:
-      name: helpers
-      sha256: d82a48e5acd45e3650af20779cf61326dd9c1aaf729fdab4ae721dc48f28b840
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.3"
   html:
     dependency: transitive
     description:
@@ -440,6 +408,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
+  media_kit:
+    dependency: "direct main"
+    description:
+      name: media_kit
+      sha256: "080cfb5af8d04f8cc454cb4c5ea34b19de5b8e1a1b3af62a34e766364b5244ad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.11"
+  media_kit_libs_linux:
+    dependency: transitive
+    description:
+      name: media_kit_libs_linux
+      sha256: "21acc71cbae3518b3aeef9023a6a3a3decb579a40153764333814987ccd61040"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
+  media_kit_libs_macos_video:
+    dependency: transitive
+    description:
+      name: media_kit_libs_macos_video
+      sha256: c4d3706af5a67bf194d8208eef5cf29ea79e64931ea9bcd50f665b9a438f8416
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
+  media_kit_libs_windows_video:
+    dependency: transitive
+    description:
+      name: media_kit_libs_windows_video
+      sha256: "99a3a85b185ae012a8e3bd596cf0ca425834477d0bec86207548d6ff7c926254"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
+  media_kit_native_event_loop:
+    dependency: transitive
+    description:
+      name: media_kit_native_event_loop
+      sha256: "521125e534603c3f603b93283db3938f557f33ecc383fbd62edd4beb3bf73747"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
+  media_kit_video:
+    dependency: transitive
+    description:
+      name: media_kit_video
+      sha256: "89d3c2cdb0f74d1bb597a9c9a7678f656fe538d20620ad1317b7354fd5d1af15"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.12"
   meedu:
     dependency: transitive
     description:
@@ -584,6 +600,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
+  safe_local_storage:
+    dependency: transitive
+    description:
+      name: safe_local_storage
+      sha256: ede4eb6cb7d88a116b3d3bf1df70790b9e2038bc37cb19112e381217c74d9440
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   screen_brightness:
     dependency: transitive
     description:
@@ -773,6 +797,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: "5fcbd27688af6082f5abd611af56ee575342c30e87541d0245f7ff99faa02c60"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   term_glyph:
     dependency: transitive
     description:
@@ -813,6 +845,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0+1"
+  uri_parser:
+    dependency: transitive
+    description:
+      name: uri_parser
+      sha256: "6543c9fd86d2862fac55d800a43e67c0dcd1a41677cb69c2f8edfe73bbcf1835"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   vector_math:
     dependency: transitive
     description:
@@ -845,14 +885,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.6"
-  video_player_dart_vlc:
+  video_player_media_kit:
     dependency: transitive
     description:
-      name: video_player_dart_vlc
-      sha256: ca0570fb514106081c3dfa9a55990303e0239a1863664a90f8eb0676c7a7eb18
+      name: video_player_media_kit
+      sha256: f83872f20bbb198341cc749bf186157779c1ce34cd34b94514747f79cc3ddd64
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.6"
+    version: "0.0.16"
   video_player_platform_interface:
     dependency: transitive
     description:
@@ -983,4 +1023,4 @@ packages:
     version: "1.12.4"
 sdks:
   dart: ">=3.0.2 <4.0.0"
-  flutter: ">=3.3.0"
+  flutter: ">=3.7.0"

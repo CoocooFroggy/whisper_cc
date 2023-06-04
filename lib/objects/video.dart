@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
 @JsonSerializable()
-class Video {
+class CaptionedVideo {
   final String link;
   final String captions;
 
-  Video({required this.link, required this.captions});
+  CaptionedVideo({required this.link, required this.captions});
 }

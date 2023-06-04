@@ -66,7 +66,7 @@ class _LinkScreenState extends State<LinkScreen> {
                           // TODO
                           print(captions);
 
-                          Video(link: 'https://youtube.com/watch?v=$id', captions: captions);
+                          CaptionedVideo(link: 'https://youtube.com/watch?v=$id', captions: captions);
                         }
                         _loading = false;
                       },

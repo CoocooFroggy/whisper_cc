@@ -38,8 +38,9 @@ dependencies:
   http: ^0.13.6
   json_serializable: ^6.7.0
   video_player: ^2.6.1
-  flutter_meedu_videoplayer: ^3.2.0
+  flutter_meedu_videoplayer: ^4.2.10
   youtube_explode_dart: ^1.12.4
+  media_kit: ^0.0.11
 
 dev_dependencies:
   flutter_test:
