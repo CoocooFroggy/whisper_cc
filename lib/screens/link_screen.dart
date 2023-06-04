@@ -62,7 +62,7 @@ class _LinkScreenState extends State<LinkScreen> {
                         if (_formKey.currentState!.validate()) {
                           _formKey.currentState!.save();
                           final String captions =
-                              await WhisperApi.generateCaptions(id!);
+                              await WhisperApi.generateCaptionsBackend(id!);
                           // TODO
                           print(captions);
 

@@ -1,0 +1,4 @@
+enum Backend {
+  replicate,
+  local,
+}

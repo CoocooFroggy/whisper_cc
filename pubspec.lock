@@ -600,6 +600,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.3"
+  replicate:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "5c3e874cdef9c7ffd274cacd49028db9bbc07c73"
+      url: "https://github.com/CoocooFroggy/replicate"
+    source: git
+    version: "1.0.0"
   safe_local_storage:
     dependency: transitive
     description:

@@ -4,8 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_meedu_videoplayer/meedu_player.dart';
-import 'package:http/http.dart' as http;
 import 'package:whisper_cc/logic/api.dart';
+import 'package:whisper_cc/logic/cors_bypass.dart';
+import 'package:whisper_cc/objects/backend_enum.dart';
 import 'package:whisper_cc/objects/video.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -16,29 +17,6 @@ class Quality {
     required this.url,
     required this.label,
   });
-}
-
-class CorsBypassClient extends http.BaseClient {
-  final _client = http.Client();
-
-  @override
-  Future<http.StreamedResponse> send(covariant http.Request request) {
-    final uri = request.url;
-    final http.BaseRequest newRequest = http.Request(
-        request.method,
-        request.url.replace(
-            //TODO: change this cors-anywhere to your instance
-            host: '',
-            pathSegments: [uri.host, ...uri.pathSegments]))
-      ..headers.addAll({
-        ...request.headers,
-        'origin': 'https://www.youtube.com',
-        'x-requested-with': 'https://www.youtube.com',
-      })
-      ..bodyBytes = request.bodyBytes;
-
-    return _client.send(newRequest);
-  }
 }
 
 class YoutubeExamplePage extends StatefulWidget {
@@ -56,6 +34,7 @@ class _YoutubeExamplePageState extends State<YoutubeExamplePage> {
 
   String fileName = '';
   final List<Quality> _qualities = [];
+  Backend _dropdownValue = Backend.replicate;
   String _captions = '';
   final ValueNotifier<bool> _subtitlesEnabled = ValueNotifier(true);
 
@@ -136,6 +115,7 @@ class _YoutubeExamplePageState extends State<YoutubeExamplePage> {
       autoplay: true,
       seekTo: _currentPosition,
     );
+    _controller.onClosedCaptionEnabled(true);
   }
 
   void _onChangeVideoQuality() {
@@ -213,9 +193,21 @@ class _YoutubeExamplePageState extends State<YoutubeExamplePage> {
                                   _currentPosition = Duration.zero;
 
                                   try {
-                                    _captions =
-                                        await WhisperApi.generateCaptions(
-                                            url.text);
+                                    switch (_dropdownValue) {
+                                      case Backend.local:
+                                        {
+                                          _captions = await WhisperApi
+                                              .generateCaptionsBackend(
+                                                  url.text);
+                                        }
+                                      case Backend.replicate:
+                                        {
+                                          _captions = await WhisperApi
+                                              .generateCaptionsReplicate(
+                                                  url.text);
+                                        }
+                                    }
+
                                     print(_captions);
 
                                     final CaptionedVideo video = CaptionedVideo(
@@ -232,8 +224,9 @@ class _YoutubeExamplePageState extends State<YoutubeExamplePage> {
                                                     'Unable to play video: ${e.toString()}')));
                                       }
                                     }
-                                  } catch (e) {
+                                  } catch (e, st) {
                                     print(e);
+                                    print(st);
                                     if (mounted) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
@@ -246,7 +239,26 @@ class _YoutubeExamplePageState extends State<YoutubeExamplePage> {
                                 },
                                 child: const Text('Play'));
                       }),
-                )
+                ),
+                Expanded(
+                  flex: 1,
+                  child: DropdownButton(
+                    value: _dropdownValue,
+                    items: const [
+                      DropdownMenuItem(
+                          value: Backend.replicate, child: Text('Replicate')),
+                      DropdownMenuItem(
+                          value: Backend.local, child: Text('Local Backend')),
+                    ],
+                    onChanged: (Object? value) {
+                      setState(() {
+                        if (value is Backend) {
+                          _dropdownValue = value;
+                        }
+                      });
+                    },
+                  ),
+                ),
               ],
             ),
             const SizedBox(
