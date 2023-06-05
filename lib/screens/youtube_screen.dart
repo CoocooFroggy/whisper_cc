@@ -194,16 +194,22 @@ class _YoutubeExamplePageState extends State<YoutubeExamplePage> {
 
                                   try {
                                     switch (_dropdownValue) {
-                                      case Backend.local:
-                                        {
-                                          _captions = await WhisperApi
-                                              .generateCaptionsBackend(
-                                                  url.text);
-                                        }
                                       case Backend.replicate:
                                         {
                                           _captions = await WhisperApi
                                               .generateCaptionsReplicate(
+                                              url.text);
+                                        }
+                                      case Backend.hugging:
+                                        {
+                                          _captions = await WhisperApi
+                                              .generateCaptionsHuggingFace(
+                                              url.text);
+                                        }
+                                      case Backend.local:
+                                        {
+                                          _captions = await WhisperApi
+                                              .generateCaptionsBackend(
                                                   url.text);
                                         }
                                     }
@@ -247,6 +253,8 @@ class _YoutubeExamplePageState extends State<YoutubeExamplePage> {
                     items: const [
                       DropdownMenuItem(
                           value: Backend.replicate, child: Text('Replicate')),
+                      DropdownMenuItem(
+                          value: Backend.hugging, child: Text('Hugging Face')),
                       DropdownMenuItem(
                           value: Backend.local, child: Text('Local Backend')),
                     ],
