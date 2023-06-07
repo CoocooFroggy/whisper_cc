@@ -146,6 +146,7 @@ class WhisperApi {
           counter++;
         }
 
+        channel.sink.close();
         return buffer.toString();
       }
     }
