@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:whisper_cc/logic/api.dart';
-import 'package:whisper_cc/objects/backend_enum.dart';
 import 'package:whisper_cc/objects/video.dart';
 import 'package:whisper_cc/screens/youtube_screen.dart';
 
@@ -13,7 +12,7 @@ class LinkScreen extends StatefulWidget {
 
 /// Regular expression for YouTube links
 final youtubeRegex = RegExp(
-    r'http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?');
+    r'http(?:s?):\/\/(?:(?:www\.)|(?:m\.))?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?');
 
 class _LinkScreenState extends State<LinkScreen> {
   // Create a global key that uniquely identifies the Form widget
@@ -22,7 +21,6 @@ class _LinkScreenState extends State<LinkScreen> {
   bool _loading = false;
 
   String? _id;
-  Backend _dropdownValue = Backend.hugging;
   double _progress = -1;
 
   @override
@@ -57,25 +55,6 @@ class _LinkScreenState extends State<LinkScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              const Text('Choose the backend.'),
-              DropdownButton(
-                value: _dropdownValue,
-                items: const [
-                  DropdownMenuItem(
-                      value: Backend.hugging, child: Text('Hugging Face')),
-                  DropdownMenuItem(
-                      value: Backend.replicate, child: Text('Replicate')),
-                  DropdownMenuItem(
-                      value: Backend.local, child: Text('Local Backend')),
-                ],
-                onChanged: (Object? value) {
-                  setState(() {
-                    if (value is Backend) {
-                      _dropdownValue = value;
-                    }
-                  });
-                },
-              ),
               const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
@@ -92,24 +71,9 @@ class _LinkScreenState extends State<LinkScreen> {
                             final url = 'https://youtube.com/watch?v=$_id';
                             final String captions;
 
-                            switch (_dropdownValue) {
-                              case Backend.replicate:
-                                {
-                                  captions = await WhisperApi
-                                      .generateCaptionsReplicate(url);
-                                }
-                              case Backend.hugging:
-                                {
-                                  captions = await WhisperApi
-                                      .generateCaptionsHuggingFace(url);
-                                }
-                              case Backend.local:
-                                {
-                                  captions =
-                                      await WhisperApi.generateCaptionsBackend(
-                                          url);
-                                }
-                            }
+                            captions =
+                                await WhisperApi.generateCaptionsHuggingFace(
+                                    url);
 
                             print(captions);
 
@@ -134,6 +98,7 @@ class _LinkScreenState extends State<LinkScreen> {
                 ),
               ),
               // Only show progress if we need to
+              // TODO: Progress bar
               (_progress != -1)
                   ? LinearProgressIndicator(value: _progress)
                   : const SizedBox(),
