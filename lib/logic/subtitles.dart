@@ -1,44 +1,38 @@
-import 'package:whisper_cc/objects/segment.dart';
-
 class Subtitles {
-  /// Generates a SRT subtitle file from [segments]
-  static String generateSubtitles(List<Segment> segments) {
+  /// Generates a SRT subtitle file from Hugging Face output
+  static String generateSubtitles(String hfOutput) {
+    final timestampRegex = RegExp(
+        r'^\[((?:\d{2}:)?\d{2}:\d{2}\.\d{3}) -> ((?:\d{2}:)?\d{2}:\d{2}\.\d{3})\] {2}(.*)$',
+        multiLine: true);
+
     StringBuffer buffer = StringBuffer();
-    for (int i = 0; i < segments.length; i++) {
-      final segment = segments[i];
+
+    int counter = 1;
+    for (var match in timestampRegex.allMatches(hfOutput)) {
+      // EG 59:31.000, missing the 00: in front for hours
+      String time1 = match.group(1)!;
+      String time2 = match.group(2)!;
+
+      if (time1.length == 9) {
+        time1 = '00:$time1';
+      }
+      if (time2.length == 9) {
+        time2 = '00:$time2';
+      }
+
+      // Change HH:MM:SS.MMM to HH:MM:SS,MMM
+      time1 = time1.replaceFirst('.', ',');
+      time2 = time2.replaceFirst('.', ',');
+
       buffer
-        ..writeln(i)
-        ..writeln('${formatTime(segment.start)} --> ${formatTime(segment.end)}')
-        ..writeln(segment.text)
+        ..writeln(counter)
+        ..writeln('$time1 --> $time2')
+        ..writeln(match.group(3)!)
         ..writeln();
+
+      counter++;
     }
+
     return buffer.toString();
-  }
-
-  /// Formats the given [seconds] into an SRT subtitle timestamp.
-  ///
-  /// The [seconds] parameter represents the time duration in seconds.
-  /// The formatted timestamp follows the format HH:MM:SS,MMM.
-  /// HH represents hours, MM represents minutes, SS represents seconds,
-  /// and MMM represents milliseconds.
-  ///
-  /// Returns the formatted SRT subtitle timestamp as a [String].
-  static String formatTime(double seconds) {
-    int hours = (seconds / 3600).floor();
-    int minutes = ((seconds % 3600) / 60).floor();
-    int secs = (seconds % 60).floor();
-    int milliseconds = ((seconds % 1) * 1000).round();
-
-    String formattedTime =
-        '${_formatTwoDigits(hours)}:${_formatTwoDigits(minutes)}:${_formatTwoDigits(secs)},${_formatMilliseconds(milliseconds)}';
-    return formattedTime;
-  }
-
-  static String _formatTwoDigits(int number) {
-    return number.toString().padLeft(2, '0');
-  }
-
-  static String _formatMilliseconds(int number) {
-    return number.toString().padLeft(3, '0');
   }
 }

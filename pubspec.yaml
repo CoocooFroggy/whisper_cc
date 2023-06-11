@@ -36,7 +36,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   http: ^0.13.6
-  json_serializable: ^6.7.0
   video_player: ^2.6.1
   flutter_meedu_videoplayer: ^4.2.10
   youtube_explode_dart: ^1.12.4
@@ -44,6 +43,8 @@ dependencies:
   replicate:
     git: https://github.com/CoocooFroggy/replicate
   web_socket_channel: ^2.4.0
+  json_serializable: ^6.7.0
+  json_annotation: ^4.8.1
 
 dev_dependencies:
   flutter_test:
@@ -102,7 +103,8 @@ flutter:
 
 flutter_launcher_icons:
   android: true
-  ios: true
+  ios: "AppIcon"
+  remove_alpha_ios: true
   image_path: "assets/icon/icon.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
   web:

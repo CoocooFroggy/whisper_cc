@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:whisper_cc/logic/api.dart';
+import 'package:whisper_cc/logic/subtitles.dart';
+import 'package:whisper_cc/objects/backend.dart';
 import 'package:whisper_cc/objects/video.dart';
 import 'package:whisper_cc/screens/youtube_screen.dart';
 
@@ -69,28 +71,56 @@ class _LinkScreenState extends State<LinkScreen> {
                             _formKey.currentState!.save();
 
                             final url = 'https://youtube.com/watch?v=$_id';
-                            final String captions;
 
-                            captions =
-                                await WhisperApi.generateCaptionsHuggingFace(
-                                    url);
+                            WhisperApi.generateCaptionsHuggingFace(url)
+                                .listen((status) {
+                              switch (status) {
+                                case (QueuedBackendStatus s):
+                                  {
+                                    setState(() {
+                                      _progress = 0.0;
+                                    });
+                                  }
+                                case (StartingBackendStatus s):
+                                  {
+                                    setState(() {
+                                      _progress = 0.5;
+                                    });
+                                  }
+                                case (RunningBackendStatus s):
+                                  {
+                                    setState(() {
+                                      _progress = 0.8;
+                                    });
+                                  }
+                                case (CompletedBackendStatus s):
+                                  {
+                                    setState(() {
+                                      _progress = 1.0;
+                                    });
+                                    final captions =
+                                        Subtitles.generateSubtitles(s.output);
+                                    print(captions);
 
-                            print(captions);
+                                    final video = CaptionedVideo(
+                                        link: url, captions: captions);
 
-                            final video =
-                                CaptionedVideo(link: url, captions: captions);
+                                    if (!mounted) return;
 
-                            if (!mounted) return;
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                YoutubeExamplePage(
+                                                    video: video)));
 
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        YoutubeExamplePage(video: video)));
+                                    setState(() {
+                                      _loading = false;
+                                    });
+                                  }
+                              }
+                            });
                           }
-                          setState(() {
-                            _loading = false;
-                          });
                         },
                   child: _loading
                       ? const CircularProgressIndicator()
