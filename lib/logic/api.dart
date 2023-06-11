@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:whisper_cc/objects/backend.dart';
 
 const apiUrl = 'http://localhost:8080/generate';
 
@@ -19,6 +20,11 @@ class WhisperApi {
       }
 
       final json = jsonDecode(message);
+
+      // TODO
+      var status = BackendStatus.fromJson(json);
+      if (status);
+      // End todo
 
       if (json['msg'] == 'send_hash') {
         channel.sink.add('{"fn_index": 4,"session_hash": "axs96bihraf"}');
