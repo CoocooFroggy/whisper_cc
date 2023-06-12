@@ -24,6 +24,8 @@ class _LinkScreenState extends State<LinkScreen> {
 
   String? _id;
   double _progress = -1;
+  double _newProgress = -1;
+  late Duration _duration;
 
   @override
   Widget build(BuildContext context) {
@@ -57,85 +59,101 @@ class _LinkScreenState extends State<LinkScreen> {
                 },
               ),
               const SizedBox(height: 20),
-              const SizedBox(height: 20),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _loading
-                      ? null
-                      : () async {
-                          setState(() {
-                            _loading = true;
-                          });
-                          // Validate returns true if the form is valid, or false otherwise.
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-
-                            final url = 'https://youtube.com/watch?v=$_id';
-
-                            WhisperApi.generateCaptionsHuggingFace(url)
-                                .listen((status) {
-                              switch (status) {
-                                case (QueuedBackendStatus s):
-                                  {
-                                    setState(() {
-                                      _progress = 0.0;
-                                    });
-                                  }
-                                case (StartingBackendStatus s):
-                                  {
-                                    setState(() {
-                                      _progress = 0.5;
-                                    });
-                                  }
-                                case (RunningBackendStatus s):
-                                  {
-                                    setState(() {
-                                      _progress = 0.8;
-                                    });
-                                  }
-                                case (CompletedBackendStatus s):
-                                  {
-                                    setState(() {
-                                      _progress = 1.0;
-                                    });
-                                    final captions =
-                                        Subtitles.generateSubtitles(s.output);
-                                    print(captions);
-
-                                    final video = CaptionedVideo(
-                                        link: url, captions: captions);
-
-                                    if (!mounted) return;
-
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                YoutubeExamplePage(
-                                                    video: video)));
-
-                                    setState(() {
-                                      _loading = false;
-                                    });
-                                  }
-                              }
-                            });
-                          }
-                        },
-                  child: _loading
-                      ? const CircularProgressIndicator()
-                      : const Text('Submit'),
-                ),
-              ),
               // Only show progress if we need to
-              // TODO: Progress bar
-              (_progress != -1)
-                  ? LinearProgressIndicator(value: _progress)
-                  : const SizedBox(),
+              if (_progress != -1)
+                TweenAnimationBuilder(
+                  tween: Tween<double>(
+                    begin: _progress,
+                    end: _newProgress,
+                  ),
+                  duration: _duration,
+                  builder:
+                      (BuildContext context, double? value, Widget? child) {
+                    return LinearProgressIndicator(value: value);
+                  },
+                )
+              else
+                Center(
+                  child: ElevatedButton(
+                    onPressed: _loading ? null : _runSubmit,
+                    child: _loading
+                        ? const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Text('Submit'),
+                  ),
+                ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _runSubmit() {
+    setState(() {
+      _loading = true;
+    });
+    // Validate returns true if the form is valid, or false otherwise.
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      final url = 'https://youtube.com/watch?v=$_id';
+
+      WhisperApi.generateCaptionsHuggingFace(url).listen((status) {
+        switch (status) {
+          case (QueuedBackendStatus s):
+            _animateProgressBar(
+                0.5, Duration(milliseconds: (s.rankEta * 1000).toInt()));
+          case (StartingBackendStatus _):
+            {
+              _animateProgressBar(0.55, const Duration(milliseconds: 250));
+            }
+          case (RunningBackendStatus s):
+            {
+              switch (s.desc) {
+                case RunningDesc.loadingAudio:
+                  _animateProgressBar(0.6, const Duration(milliseconds: 250));
+                case RunningDesc.preProcessing:
+                  _animateProgressBar(0.65, const Duration(milliseconds: 250));
+                case RunningDesc.transcribing:
+                  _animateProgressBar(0.9, const Duration(seconds: 5));
+              }
+            }
+          case (CompletedBackendStatus s):
+            {
+              _animateProgressBar(-1, Duration.zero);
+              final captions = Subtitles.generateSubtitles(s.output);
+              print(captions);
+
+              final video = CaptionedVideo(link: url, captions: captions);
+
+              if (!mounted) return;
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => YoutubeExamplePage(video: video)));
+
+              setState(() {
+                _loading = false;
+              });
+            }
+        }
+      });
+    } else {
+      setState(() {
+        _loading = false;
+      });
+    }
+  }
+
+  void _animateProgressBar(double newProgress, Duration duration) {
+    setState(() {
+      _newProgress = newProgress;
+      _duration = duration;
+    });
+    _progress = newProgress;
   }
 }

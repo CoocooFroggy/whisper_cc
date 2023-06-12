@@ -56,23 +56,27 @@ RunningBackendStatus _$RunningBackendStatusFromJson(
         Map<String, dynamic> json) =>
     RunningBackendStatus(
       $enumDecode(_$BackendEnumMap, json['msg']),
-      progressData: (json['progress_data'] as List<dynamic>)
-          .map((e) => e as Map<String, dynamic>)
-          .toList(),
+      desc: $enumDecode(_$RunningDescEnumMap, _readDesc(json, 'desc')),
     );
 
 Map<String, dynamic> _$RunningBackendStatusToJson(
         RunningBackendStatus instance) =>
     <String, dynamic>{
       'msg': _$BackendEnumMap[instance.backend]!,
-      'progress_data': instance.progressData,
+      'desc': _$RunningDescEnumMap[instance.desc]!,
     };
+
+const _$RunningDescEnumMap = {
+  RunningDesc.loadingAudio: 'Loading audio file...',
+  RunningDesc.preProcessing: 'Pre-processing audio file...',
+  RunningDesc.transcribing: 'Transcribing...',
+};
 
 CompletedBackendStatus _$CompletedBackendStatusFromJson(
         Map<String, dynamic> json) =>
     CompletedBackendStatus(
       $enumDecode(_$BackendEnumMap, json['msg']),
-      output: outputFromJson(json['output']),
+      output: readOutput(json, 'output') as String,
     );
 
 Map<String, dynamic> _$CompletedBackendStatusToJson(

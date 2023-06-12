@@ -13,13 +13,6 @@ enum Backend {
   completed,
 }
 
-const _backendEnumMap = {
-  Backend.queued: 'estimation',
-  Backend.starting: 'process_starts',
-  Backend.running: 'progress',
-  Backend.completed: 'process_completed',
-};
-
 @JsonSerializable()
 class BackendStatus {
   @JsonKey(name: 'msg')
@@ -28,8 +21,8 @@ class BackendStatus {
   BackendStatus(this.backend);
 
   factory BackendStatus.fromJson(Map<String, dynamic> json) {
-    final backend = $enumDecode(_backendEnumMap, json['msg']);
-    switch (backend) {
+    // Return a different inherited object depending on `backend` enum
+    switch (_$BackendStatusFromJson(json).backend) {
       case Backend.queued: {
         return QueuedBackendStatus.fromJson(json);
       }
@@ -44,7 +37,6 @@ class BackendStatus {
       }
     }
   }
-  Map<String, dynamic> toJson(instance) => _$BackendStatusToJson(this);
 }
 
 @JsonSerializable()
@@ -58,8 +50,6 @@ class QueuedBackendStatus extends BackendStatus {
   QueuedBackendStatus(super.backend, {required this.rank, required this.queueSize, required this.rankEta});
 
   factory QueuedBackendStatus.fromJson(Map<String, dynamic> json) => _$QueuedBackendStatusFromJson(json);
-  @override
-  Map<String, dynamic> toJson(instance) => _$QueuedBackendStatusToJson(this);
 }
 
 @JsonSerializable()
@@ -67,34 +57,42 @@ class StartingBackendStatus extends BackendStatus {
   StartingBackendStatus(super.backend);
 
   factory StartingBackendStatus.fromJson(Map<String, dynamic> json) => _$StartingBackendStatusFromJson(json);
-  @override
-  Map<String, dynamic> toJson(instance) => _$StartingBackendStatusToJson(this);
+}
+
+enum RunningDesc {
+  @JsonValue('Loading audio file...')
+  loadingAudio,
+  @JsonValue('Pre-processing audio file...')
+  preProcessing,
+  @JsonValue('Transcribing...')
+  transcribing,
 }
 
 @JsonSerializable()
 class RunningBackendStatus extends BackendStatus {
-  @JsonKey(name: 'progress_data')
-  final List<Map<String, dynamic>> progressData;
+  @JsonKey(readValue: _readDesc)
+  final RunningDesc desc;
 
-  RunningBackendStatus(super.backend, {required this.progressData});
+  RunningBackendStatus(super.backend, {required this.desc});
 
   factory RunningBackendStatus.fromJson(Map<String, dynamic> json) => _$RunningBackendStatusFromJson(json);
-  @override
-  Map<String, dynamic> toJson(instance) => _$RunningBackendStatusToJson(this);
+}
+
+/// The second parameter is the key which we don't need
+String _readDesc(dynamic json, _) {
+  return json['progress_data'][0]['desc'];
 }
 
 @JsonSerializable()
 class CompletedBackendStatus extends BackendStatus {
-  @JsonKey(fromJson: outputFromJson)
+  @JsonKey(readValue: readOutput)
   final String output;
 
   CompletedBackendStatus(super.backend, {required this.output});
 
   factory CompletedBackendStatus.fromJson(Map<String, dynamic> json) => _$CompletedBackendStatusFromJson(json);
-  @override
-  Map<String, dynamic> toJson(instance) => _$CompletedBackendStatusToJson(this);
 }
 
-String outputFromJson(dynamic json) {
-  return json['data'][1];
+String readOutput(dynamic json, _) {
+  return json['output']['data'][1];
 }
