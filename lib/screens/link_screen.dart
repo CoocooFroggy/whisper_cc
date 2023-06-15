@@ -26,6 +26,7 @@ class _LinkScreenState extends State<LinkScreen> {
   double _progress = -1;
   double _newProgress = -1;
   late Duration _duration;
+  String _text = '';
 
   @override
   Widget build(BuildContext context) {
@@ -52,25 +53,22 @@ class _LinkScreenState extends State<LinkScreen> {
                   }
                   return null;
                 },
+                enabled: !_loading,
                 onSaved: (newValue) {
                   // validator ensures there's a match
                   final match = youtubeRegex.firstMatch(newValue!);
                   _id = match!.group(1);
                 },
+                onFieldSubmitted: (value) => _runSubmit(),
               ),
               const SizedBox(height: 20),
               // Only show progress if we need to
               if (_progress != -1)
-                TweenAnimationBuilder(
-                  tween: Tween<double>(
-                    begin: _progress,
-                    end: _newProgress,
-                  ),
+                ProgressWidget(
+                  progress: _progress,
+                  newProgress: _newProgress,
                   duration: _duration,
-                  builder:
-                      (BuildContext context, double? value, Widget? child) {
-                    return LinearProgressIndicator(value: value);
-                  },
+                  text: _text,
                 )
               else
                 Center(
@@ -104,26 +102,41 @@ class _LinkScreenState extends State<LinkScreen> {
       WhisperApi.generateCaptionsHuggingFace(url).listen((status) {
         switch (status) {
           case (QueuedBackendStatus s):
-            _animateProgressBar(
-                0.5, Duration(milliseconds: (s.rankEta * 1000).toInt()));
+            {
+              // TODO: Progress bar still just jumps here
+              _animateProgressBar(
+                  0.5,
+                  Duration(milliseconds: (s.rankEta * 1000).toInt()),
+                  'Waiting in queue...');
+            }
           case (StartingBackendStatus _):
             {
-              _animateProgressBar(0.55, const Duration(milliseconds: 250));
+              _animateProgressBar(
+                  0.55, const Duration(milliseconds: 250), 'Starting...');
             }
           case (RunningBackendStatus s):
             {
               switch (s.desc) {
                 case RunningDesc.loadingAudio:
-                  _animateProgressBar(0.6, const Duration(milliseconds: 250));
+                  _animateProgressBar(0.6, const Duration(milliseconds: 250),
+                      'Loading audio...');
                 case RunningDesc.preProcessing:
-                  _animateProgressBar(0.65, const Duration(milliseconds: 250));
+                  _animateProgressBar(0.65, const Duration(milliseconds: 250),
+                      'Pre-processing audio...');
                 case RunningDesc.transcribing:
-                  _animateProgressBar(0.9, const Duration(seconds: 5));
+                  {
+                    // index 0 starts at 0.7 progress, and index = length is 1.0
+                    // convert index to progress
+                    _animateProgressBar(
+                        (((s.index! / s.length!) * 0.3) + 0.7),
+                        const Duration(milliseconds: 250),
+                        'Transcribing; Step ${s.index! + 1} out of ${s.length!}');
+                  }
               }
             }
           case (CompletedBackendStatus s):
             {
-              _animateProgressBar(-1, Duration.zero);
+              _animateProgressBar(-1, Duration.zero, 'Finished!');
               final captions = Subtitles.generateSubtitles(s.output);
               print(captions);
 
@@ -149,11 +162,49 @@ class _LinkScreenState extends State<LinkScreen> {
     }
   }
 
-  void _animateProgressBar(double newProgress, Duration duration) {
+  void _animateProgressBar(double newProgress, Duration duration, String text) {
     setState(() {
       _newProgress = newProgress;
       _duration = duration;
+      _text = text;
     });
     _progress = newProgress;
+  }
+}
+
+class ProgressWidget extends StatelessWidget {
+  const ProgressWidget({
+    super.key,
+    required double progress,
+    required double newProgress,
+    required Duration duration,
+    required String text,
+  })  : _progress = progress,
+        _newProgress = newProgress,
+        _duration = duration,
+        _text = text;
+
+  final double _progress;
+  final double _newProgress;
+  final Duration _duration;
+  final String _text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        TweenAnimationBuilder(
+          tween: Tween<double>(
+            begin: _progress,
+            end: _newProgress,
+          ),
+          duration: _duration,
+          builder: (BuildContext context, double? value, Widget? child) {
+            return LinearProgressIndicator(value: value);
+          },
+        ),
+        Text(_text),
+      ],
+    );
   }
 }

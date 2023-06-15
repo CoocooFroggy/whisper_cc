@@ -57,6 +57,8 @@ RunningBackendStatus _$RunningBackendStatusFromJson(
     RunningBackendStatus(
       $enumDecode(_$BackendEnumMap, json['msg']),
       desc: $enumDecode(_$RunningDescEnumMap, _readDesc(json, 'desc')),
+      index: _readIndex(json, 'index') as int?,
+      length: _readLength(json, 'length') as int?,
     );
 
 Map<String, dynamic> _$RunningBackendStatusToJson(
@@ -64,6 +66,8 @@ Map<String, dynamic> _$RunningBackendStatusToJson(
     <String, dynamic>{
       'msg': _$BackendEnumMap[instance.backend]!,
       'desc': _$RunningDescEnumMap[instance.desc]!,
+      'index': instance.index,
+      'length': instance.length,
     };
 
 const _$RunningDescEnumMap = {
