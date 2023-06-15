@@ -104,6 +104,11 @@ class _LinkScreenState extends State<LinkScreen> {
           case (QueuedBackendStatus s):
             {
               // TODO: Progress bar still just jumps here
+              setState(() {
+                _progress = 0;
+                _newProgress = 0;
+                _duration = Duration.zero;
+              });
               _animateProgressBar(
                   0.5,
                   Duration(milliseconds: (s.rankEta * 1000).toInt()),
@@ -203,7 +208,13 @@ class ProgressWidget extends StatelessWidget {
             return LinearProgressIndicator(value: value);
           },
         ),
-        Text(_text),
+        Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: Text(
+            _text,
+            style: TextStyle(color: Theme.of(context).hintColor),
+          ),
+        ),
       ],
     );
   }
