@@ -22,14 +22,14 @@ class WhisperApi {
       final json = jsonDecode(message);
 
       if (json['msg'] == 'send_hash') {
-        channel.sink.add('{"fn_index": 4,"session_hash": "axs96bihraf"}');
+        channel.sink.add('{"fn_index": 6,"session_hash": "axs96bihraf"}');
         continue;
       }
       if (json['msg'] == 'send_data') {
         channel.sink.add(jsonEncode({
           "data": [url, "transcribe", true],
           "event_data": null,
-          "fn_index": 4,
+          "fn_index": 6,
           "session_hash": "axs96bihraf"
         }));
         continue;
