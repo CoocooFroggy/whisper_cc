@@ -1,16 +1,7 @@
-# whisper_cc
+# Whisper CC
 
-Play YouTube videos with Whisper AI captions.
+<img src="assets/icon/macos.png" alt="Whisper CC logo" width="256"/>
 
-## Getting Started
+A mobile and desktop application for Deaf/HoH people, that generates captions for YouTube videos using OpenAI's Whisper AI.
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Screenshot of Whisper CC](assets/whispeπr_screenshot.png)
