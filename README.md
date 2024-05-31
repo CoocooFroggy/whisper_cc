@@ -4,4 +4,4 @@
 
 A mobile and desktop application for Deaf/HoH people, that generates captions for YouTube videos using OpenAI's Whisper AI.
 
-![Screenshot of Whisper CC](assets/whispeπr_screenshot.png)
+![Screenshot of Whisper CC](assets/whisper_screenshot.png)
